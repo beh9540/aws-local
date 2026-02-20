@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional, Dict, Any
+from typing import Optional
 
 class AmbientWeatherData(BaseModel):
     # Standard fields sent by WS-2902
