@@ -1,6 +1,6 @@
 import httpx
 import logging
-from typing import Any
+from typing import Any, Optional
 from .config import settings
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class HAClient:
             "Content-Type": "application/json",
         }
 
-    async def update_sensor(self, sensor_id: str, state: Any, attributes: dict = None):
+    async def update_sensor(self, sensor_id: str, state: Any, attributes: Optional[dict] = None):
         url = f"{self.base_url}/api/states/sensor.{sensor_id}"
         data = {
             "state": str(state),

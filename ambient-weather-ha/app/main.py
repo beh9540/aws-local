@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request
 from .models import AmbientWeatherData
 from .config import settings
 from .ha_client import ha_client
+from typing import Any, cast
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -12,7 +13,7 @@ app = FastAPI(title="Ambient Weather to Home Assistant Bridge")
 @app.get("/data")
 async def receive_ambient_data(request: Request):
     # WS-2902 sends data as query parameters in a GET request
-    params = dict(request.query_params)
+    params = cast(Any, dict(request.query_params))
     
     try:
         data = AmbientWeatherData(**params)
