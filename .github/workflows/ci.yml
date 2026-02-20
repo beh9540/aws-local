@@ -32,8 +32,8 @@ jobs:
       - name: Run linting (Ruff)
         run: uv run ruff check .
 
-      - name: Run type checking (Red Knot)
-        run: uv run redknot check .
+      - name: Run type checking (ty)
+        run: uv run ty check .
 
       - name: Run tests
         run: uv run pytest
