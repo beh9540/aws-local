@@ -3,12 +3,20 @@ from .models import AmbientWeatherData
 from .config import settings
 from .ha_client import ha_client
 from typing import Any, cast
+from contextlib import asynccontextmanager
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Ambient Weather to Home Assistant Bridge")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    yield
+    # Shutdown
+    await ha_client.close()
+
+app = FastAPI(title="Ambient Weather to Home Assistant Bridge", lifespan=lifespan)
 
 @app.get("/data")
 async def receive_ambient_data(request: Request):
