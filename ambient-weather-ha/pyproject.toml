@@ -12,6 +12,9 @@ dependencies = [
     "uvicorn>=0.41.0",
 ]
 
+[project.scripts]
+ambient-weather-ha = "app.main:app"
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
