@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     # Optional: prefix for Home Assistant sensors
     sensor_prefix: str = Field("ambient_weather", alias="SENSOR_PREFIX")
     
+    # Optional: logging level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
+    log_level: str = Field("INFO", alias="LOG_LEVEL")
+    
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

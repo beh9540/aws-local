@@ -6,7 +6,9 @@ from typing import Any, cast
 from contextlib import asynccontextmanager
 import logging
 
-logging.basicConfig(level=logging.INFO)
+# Set log level from settings
+log_level = getattr(logging, settings.log_level.upper(), logging.INFO)
+logging.basicConfig(level=log_level)
 logger = logging.getLogger(__name__)
 
 @asynccontextmanager
@@ -22,6 +24,8 @@ app = FastAPI(title="Ambient Weather to Home Assistant Bridge", lifespan=lifespa
 async def receive_ambient_data(request: Request):
     # WS-2902 sends data as query parameters in a GET request
     params = cast(Any, dict(request.query_params))
+    
+    logger.debug(f"Received request: {request.method} {request.url} Params: {params}")
     
     try:
         data = AmbientWeatherData(**params)
