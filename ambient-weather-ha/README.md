@@ -35,7 +35,28 @@ uv sync
 uv run uvicorn app.main:app --reload
 ```
 
-## Running Tests
+## Testing and Linting
+We use `tox` for running all checks in a consistent environment.
+
+### Running all checks (Tests, Linting, Type-checking)
 ```bash
-uv run pytest
+uv run tox
+```
+
+### Individual checks
+You can run individual environments with `tox -e`:
+```bash
+uv run tox -e lint        # Run ruff check
+uv run tox -e typecheck   # Run ty check
+uv run tox -e py311       # Run pytest
+```
+
+## Pre-commit Hooks
+This project uses `pre-commit` to ensure code quality before each commit. To install the hooks:
+```bash
+uv run pre-commit install
+```
+Once installed, `tox` will run automatically on every commit. You can also run it manually:
+```bash
+uv run pre-commit run --all-files
 ```
