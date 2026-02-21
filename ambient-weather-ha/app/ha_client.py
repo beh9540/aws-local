@@ -17,7 +17,10 @@ class HAClient:
     @property
     def client(self) -> httpx.AsyncClient:
         if self._client is None or self._client.is_closed:
-            self._client = httpx.AsyncClient(headers=self.headers)
+            self._client = httpx.AsyncClient(
+                base_url=self.base_url,
+                headers=self.headers
+            )
         return self._client
 
     async def close(self):
@@ -25,7 +28,7 @@ class HAClient:
             await self._client.aclose()
 
     async def update_sensor(self, sensor_id: str, state: Any, attributes: Optional[dict] = None):
-        url = f"{self.base_url}/api/states/sensor.{sensor_id}"
+        url = f"/api/states/sensor.{sensor_id}"
         data = {
             "state": str(state),
             "attributes": attributes or {}
