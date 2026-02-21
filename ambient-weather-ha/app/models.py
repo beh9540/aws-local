@@ -22,5 +22,8 @@ class AmbientWeatherData(BaseModel):
     baromabsin: Optional[float] = None
     tempinf: Optional[float] = None
     humidityin: Optional[int] = None
+    feelsLike: Optional[float] = None
+    dewPoint: Optional[float] = None
+    last_rain_dateutc: Optional[str] = None
     
     model_config = ConfigDict(extra="allow")

@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from .models import AmbientWeatherData
 from .config import settings
 from .ha_client import ha_client
+from .metadata import SENSOR_METADATA
 from typing import Any, cast
 from contextlib import asynccontextmanager
 import logging
@@ -45,8 +46,24 @@ async def receive_ambient_data(request: Request):
     for field, value in data.model_dump().items():
         if field not in exclude_fields and value is not None:
             sensor_id = f"{settings.sensor_prefix}_{field}"
+            
+            # Get metadata for this sensor
+            metadata = SENSOR_METADATA.get(field)
+            attributes = {}
+            if metadata:
+                attributes = {
+                    "friendly_name": metadata.friendly_name,
+                    "unit_of_measurement": metadata.unit_of_measurement,
+                    "device_class": metadata.device_class,
+                    "state_class": metadata.state_class,
+                }
+                # Remove None values
+                attributes = {k: v for k, v in attributes.items() if v is not None}
+            else:
+                attributes = {"friendly_name": f"Ambient {field}"}
+
             try:
-                await ha_client.update_sensor(sensor_id, value, {"friendly_name": f"Ambient {field}"})
+                await ha_client.update_sensor(sensor_id, value, attributes)
                 results.append(sensor_id)
             except Exception as e:
                 logger.error(f"Failed to update sensor {sensor_id}: {e}")
