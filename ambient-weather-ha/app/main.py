@@ -25,9 +25,9 @@ app = FastAPI(title="Ambient Weather to Home Assistant Bridge", lifespan=lifespa
 async def receive_ambient_data(request: Request):
     # WS-2902 sends data as query parameters in a GET request
     params = cast(Any, dict(request.query_params))
-    
+
     logger.debug(f"Received request: {request.method} {request.url} Params: {params}")
-    
+
     try:
         data = AmbientWeatherData(**params)
     except Exception as e:
@@ -41,12 +41,12 @@ async def receive_ambient_data(request: Request):
     # Process and send to Home Assistant
     # We exclude PASSKEY and stationtype from being sensors
     exclude_fields = {"PASSKEY", "stationtype", "dateutc"}
-    
+
     results = []
     for field, value in data.model_dump().items():
         if field not in exclude_fields and value is not None:
             sensor_id = f"{settings.sensor_prefix}_{field}"
-            
+
             # Get metadata for this sensor
             metadata = SENSOR_METADATA.get(field)
             attributes = {}
@@ -56,6 +56,7 @@ async def receive_ambient_data(request: Request):
                     "unit_of_measurement": metadata.unit_of_measurement,
                     "device_class": metadata.device_class,
                     "state_class": metadata.state_class,
+                    "unique_id": f"{data.PASSKEY}_{field}",
                 }
                 # Remove None values
                 attributes = {k: v for k, v in attributes.items() if v is not None}
